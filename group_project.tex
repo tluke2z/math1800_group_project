@@ -3,13 +3,16 @@
 
 %https://www.sarmate.net/demo/mathpad_tex_edit.php?lang=en
 
-\title{Math1800 Group Project}
-\author{Tyson Wheeler}
+\title{MATH1800 Group Project}
+\author{Tyson, Zoe, Harmony, and Sonny}
 \date{Semester 2, 2026}
 
 \begin{document}
 
 \maketitle
+\newpage
+\tableofcontents
+\newpage
 
 \section{Introduction}
 In forensic investigations, estimating the time of death can be essential for police investigation. This model examines how the temperature of a deceased body changes over time as heat is exchanged with the surrounding environment. Focusing particularly on when environmental conditions change. The aim of this report is to improve the basic estimation of the postmortem interval by accounting for environmental conditions like the change in the ambient temperature throughout the day.
@@ -19,7 +22,74 @@ This model explores how a deceased body may initially cool and subsequently warm
 An accurate estimation of time of death can provide police with essential information such as establishing a timeline, verifying alibis, finding, and identifying possible suspects. Thus, the aim of this model is to improve the accuracy of predicting the postmortem interval by considering external factors.
 
 \section{Mathematical Formulation and Solutions of Equations}
+%FORMULATION
 
+In order to model the daily ambient temperature, we are going to consider the general form of the negative cosine function. That is, the ambient temperature will be modelled by the function \[f(t)=-k\cos(a(t-b))+C,\] where \(a,b,k,C\in\R\) are to be determined. We will immediately choose \(a=\frac{\pi}{12}\), so that \(f\) is 24-periodic. Hence
+\[f(t)=-k\cos(\frac{\pi}{12}(t-b))+C.\]
+
+
+Next, let \(T_{min}\) be the minimum daily temperature, which occurs at time \(t_{min}\), so that \(T(t_{min})=T_{min}\). Similarly, we will have \(T(t_{max}) = T_{max}\). We can then determine the shift term \(b\). If we consider the function \[g(t)=-\cos(\frac{\pi}{12}t),\] we can see that the function will attain its minimum value at \(t=0\). However, we want the function to attain its minimum value at \(t=t_{min}\). Thus we must shift the function \(g\) to the right by \(t_{min}\) units. This means that our function \(g\) becomes \[g(t)=-\cos(\frac{\pi}{12}(t-t_{min})).\]
+Consequently, our function \(f\) becomes \[f(t)=-k\cos(\frac{\pi}{12}(t-t_{min}))+C.\]
+Note that, we currently have that \[-k+C\leq f(t)=-k\cos(\frac{\pi}{12}(t-t_{min}))+C \leq k+C.\]
+However, we want our model to range between the daily maximum temperature, and the daily minimum temperature. That is, we want \(T_{min}\leq f(t)\leq T_{max}\). Thus we need to solve the following system of equations:
+\begin{align}
+    -k+C &= T_{min}\quad\\
+    k+C &= T_{max} \quad
+\end{align}
+From (1), we have that \(C=T_{min}+k\). Substituting this into (2) gives:
+\[2k+T_{min} = T_{max} \implies k=\frac{T_{max}-T_{min}}{2} \quad (3). \]
+Substituting (3) back into (1) then gives \[C=T_{min}+\frac{T_{max}-T_{min}}{2} \implies C=\frac{T_{max}+T_{min}}{2}.\]
+We then have that 
+\begin{align*}
+f(t)&=-k\cos(\frac{\pi}{12}(t-t_{min}))+C\\
+&=\frac{T_{max}+T_{min}}{2} - \left[\frac{T_{max}-T_{min}}{2}\cos(\frac{\pi}{12}(t-t_{min}))\right].
+\end{align*}
+
+We will then recall Newton's Law of Cooling. This law assumes that rate of change of the surface temperature of an object is proportional to the difference of the temperature of an object and the ambient temperature. That is, \[\frac{dT}{dt}=-r(T-T_a).\]
+Here, \(T(t)\) denotes the objects temperature at time \(t\), \(T_a\) denotes the ambient temperature, and \(r>0\) is the rate of cooling. 
+
+Thus, with our time-dependent model for ambient temperature as formulated above, we arrive at the model
+\begin{align*}
+&\frac{dT}{dt} = -r(T-f(t))\\
+\implies &\frac{dT}{dt} + rT = rf(t)\\
+\implies &\frac{dT}{dt}+rT=r\left\{\frac{T_{max}+T_{min}}{2} -\left[\frac{T_{max}-T_{min}}{2}\cos\left(\frac{\pi}{12}(t-t_{min})\right)\right]\right\}.\tag{4}\\
+\end{align*}
+
+&SOLUTION
+
+Our model (4) is a non-homogeneous first order linear ODE, which can be solved using an integrating factor. Using the integrating factor \(\mu(t)=e^{rt}\), we can multiply (4) by \(\mu\) to get
+\begin{align*}
+    &e^{rt}\frac{dT}{dt} + re^{rt}T = re^{rt}f(t)\\
+    \implies &\frac{d}{dt} [e^{rt}T] = re^{rt}f(t)\\
+    \implies &e^{rt}T = \int re^{rt}f(t) dt + A. \tag{5}
+\end{align*}
+With \(f(t) = -k\cos(\frac{\pi}{12}(t-t_{min})) +C \), the integral on the RHS then becomes
+\begin{align*}
+    \int re^{rt}f(t)dt &= r\int e^{rt}\left[-k\cos\left(\frac{\pi}{12}(t-t_{min})\right)+C\right]dt\\
+    &=Cr\int e^{rt}dt-kr\int e^{rt}\cos\left(\frac{\pi}{12}(t-t_{min})\right)dt\\
+    &=Ce^{rt} - kr\int e^{rt}\cos\left(\frac{\pi}{12}(t-t_{min})\right)dt \tag{6}.
+\end{align*}
+
+This integral obtained in the last line can then be solved using two applications of integration by parts. Observe that
+\begin{align*}
+    \int e^{rt}\cos\left(\frac{\pi}{12}(t-t_{min})\right)dt=& \ \frac{1}{r}e^{rt}\cos\left(\frac{\pi}{12}(t-t_{min})\right) + \frac{\pi}{12r}\int e^{rt}\sin\left(\frac{\pi}{12}(t-t_{min})\right)dt \\
+    =& \ \frac{1}{r}e^{rt}\cos\left(\frac{\pi}{12}(t-t_{min})\right)
+    \\
+    &+\frac{\pi}{12r}\left[ \frac{1}{r}e^{rt}\sin\left(\frac{\pi}{12}(t-t_{min})\right) - \frac{\pi}{12r}\int e^{rt}\cos\left(\frac{\pi}{12}(t-t_{min})\right)\right]\\
+    =& \ \frac{1}{r}e^{rt}\left[\cos\left(\frac{\pi}{12}(t-t_{min})\right) + \frac{\pi}{12r}\sin\left(\frac{\pi}{12}(t-t_{min})\right) \right]\\
+    &-\frac{\pi^2}{12^2r^2}\int e^{rt}\cos\left(\frac{\pi}{12}(t-t_{min})\right)dt\\
+    \implies \left(1+\frac{\pi^2}{12^2r^2}\right)\int
+    e^{rt}\cos\left(\frac{\pi}{12}(t-t_{min})\right)dt =& \ \frac{1}{r}e^{rt}\left[\cos\left(\frac{\pi}{12}(t-t_{min})\right) + \frac{\pi}{12r}\sin\left(\frac{\pi}{12}(t-t_{min})\right) \right]\\
+    \implies \left(\frac{12^2r^2+\pi^2}{12^2r^2}\right)\int
+    e^{rt}\cos\left(\frac{\pi}{12}(t-t_{min})\right)dt =& \ \frac{1}{r}e^{rt}\left[\cos\left(\frac{\pi}{12}(t-t_{min})\right) + \frac{\pi}{12r}\sin\left(\frac{\pi}{12}(t-t_{min})\right) \right]\\
+    \implies \int
+    e^{rt}\cos\left(\frac{\pi}{12}(t-t_{min})\right)dt =& \ \frac{12^2r}{12^2r^2+\pi^2}e^{rt}\left[\cos\left(\frac{\pi}{12}(t-t_{min})\right) + \frac{\pi}{12r}\sin\left(\frac{\pi}{12}(t-t_{min})\right) \right]\\
+    =& \frac{e^{rt}}{r^2+(\frac{\pi}{12})^2}\left[r\cos\left(\frac{\pi}{12}(t-t_{min})\right) + \frac{\pi}{12}\sin\left(\frac{\pi}{12}(t-t_{min})\right) \right],
+\end{align*}
+where the first and second equality hold by integration by parts. From (5) and (6), the general solution to (4) is given by
+\[T(t) = C+Ae^{-rt} - \frac{kr}{r^2+(\frac{\pi}{12})^2}\left[r\cos\left(\frac{\pi}{12}(t-t_{min})\right) + \frac{\pi}{12}\sin\left(\frac{\pi}{12}(t-t_{min})\right) \right].\]
+Imposing the initial condition that \(T(0)=T_0\), we obtain that
+\[A=T_0-C+\frac{kr}{r^2+(\frac{\pi}{12})^2}\left[r\cos\left(\frac{\pi}{12}t_{min}\right) - \frac{\pi}{12}\sin\left(\frac{\pi}{12}t_{min}\right) \right].\]
 \section{Discussion of Results}
 
 \section{Conclusion}
